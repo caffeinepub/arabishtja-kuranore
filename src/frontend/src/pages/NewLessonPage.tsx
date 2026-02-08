@@ -5,12 +5,12 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { ArrowLeft, Plus, X, Trash2, Edit, Eye, EyeOff } from 'lucide-react';
 import { useAddLessonWithWords } from '../hooks/useQueries';
+import RichTextEditor from '../components/RichTextEditor';
 import type { Word, Ayah } from '../backend';
 
 interface NewLessonPageProps {
@@ -270,12 +270,11 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
               </div>
               <div>
                 <Label htmlFor="content">Përmbajtja</Label>
-                <Textarea
-                  id="content"
-                  placeholder="Shkruani përmbajtjen e mësimit"
+                <RichTextEditor
                   value={lessonContent}
-                  onChange={(e) => setLessonContent(e.target.value)}
-                  rows={6}
+                  onChange={setLessonContent}
+                  placeholder="Shkruani përmbajtjen e mësimit..."
+                  className="mt-2"
                 />
               </div>
               <div className="flex items-center justify-between pt-2">
@@ -467,7 +466,7 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
             >
               {addLessonWithWords.isPending ? (
                 <>
-                  <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                  <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-background border-t-transparent" />
                   Duke ruajtur...
                 </>
               ) : (
@@ -478,171 +477,154 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
         </div>
       </div>
 
-      {/* Add/Edit Word Dialog */}
-      <Dialog open={showWordDialog} onOpenChange={handleCancelWordDialog}>
-        <DialogContent className="max-w-2xl max-h-[90vh]">
+      {/* Word Dialog */}
+      <Dialog open={showWordDialog} onOpenChange={setShowWordDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>{editingWordIndex !== null ? 'Ndrysho Fjalën' : 'Shto Fjalë të Re'}</DialogTitle>
           </DialogHeader>
-          <ScrollArea className="max-h-[60vh] pr-4">
-            <div className="space-y-4">
-              {/* Arabic Word */}
-              <div>
-                <Label htmlFor="arabic">Fjala në Arabisht *</Label>
-                <Input
-                  id="arabic"
-                  placeholder="Shkruani fjalën në arabisht"
-                  value={arabicWord}
-                  onChange={(e) => setArabicWord(e.target.value)}
-                  dir="rtl"
-                  className="text-right"
-                />
-              </div>
-
-              {/* Albanian Meanings */}
-              <div>
-                <Label>Kuptimi në Shqip *</Label>
-                <div className="space-y-2 mt-2">
-                  {albanianMeanings.map((meaning, index) => (
-                    <div key={index} className="flex gap-2">
-                      <Input
-                        placeholder={`Kuptimi ${index + 1}`}
-                        value={meaning}
-                        onChange={(e) => handleMeaningChange(index, e.target.value)}
-                      />
-                      {albanianMeanings.length > 1 && (
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleRemoveMeaning(index)}
-                        >
-                          <X className="w-4 h-4" />
-                        </Button>
-                      )}
-                    </div>
-                  ))}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAddMeaning}
-                    className="w-full"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Shto Kuptim Tjetër
-                  </Button>
-                </div>
-              </div>
-
-              {/* Forms with Meanings */}
-              <div>
-                <Label>Format e Disponueshme</Label>
-                <div className="space-y-2 mt-2">
-                  {forms.map((form, index) => (
-                    <div key={index} className="space-y-2">
-                      <div className="flex gap-2 items-start">
-                        <div className="flex-1 space-y-2">
-                          <Input
-                            placeholder={`Forma ${index + 1} (Arabisht)`}
-                            value={form}
-                            onChange={(e) => handleFormChange(index, e.target.value)}
-                            dir="rtl"
-                            className="text-right"
-                          />
-                          <Input
-                            placeholder={`Kuptimi i formës ${index + 1} (Shqip)`}
-                            value={formMeanings[index] || ''}
-                            onChange={(e) => handleFormMeaningChange(index, e.target.value)}
-                          />
-                        </div>
-                        {forms.length > 1 && (
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleRemoveForm(index)}
-                            className="shrink-0"
-                          >
-                            <X className="w-4 h-4" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAddForm}
-                    className="w-full"
-                  >
-                    <Plus className="w-4 h-4 mr-2" />
-                    Shto Formë Tjetër
-                  </Button>
-                </div>
-              </div>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="arabic">Fjala në Arabisht</Label>
+              <Input
+                id="arabic"
+                placeholder="Shkruani fjalën në arabisht"
+                value={arabicWord}
+                onChange={(e) => setArabicWord(e.target.value)}
+                dir="rtl"
+                className="text-right"
+              />
             </div>
-          </ScrollArea>
+
+            <div>
+              <Label>Kuptimet në Shqip</Label>
+              {albanianMeanings.map((meaning, index) => (
+                <div key={index} className="flex gap-2 mt-2">
+                  <Input
+                    placeholder={`Kuptimi ${index + 1}`}
+                    value={meaning}
+                    onChange={(e) => handleMeaningChange(index, e.target.value)}
+                  />
+                  {albanianMeanings.length > 1 && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => handleRemoveMeaning(index)}
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  )}
+                </div>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAddMeaning}
+                className="mt-2"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Shto Kuptim
+              </Button>
+            </div>
+
+            <div>
+              <Label>Format e Fjalës (opsionale)</Label>
+              {forms.map((form, index) => (
+                <div key={index} className="space-y-2 mt-2 p-3 border rounded-lg">
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Forma në arabisht"
+                      value={form}
+                      onChange={(e) => handleFormChange(index, e.target.value)}
+                      dir="rtl"
+                      className="text-right"
+                    />
+                    {forms.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => handleRemoveForm(index)}
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    )}
+                  </div>
+                  <Input
+                    placeholder="Kuptimi i formës"
+                    value={formMeanings[index]}
+                    onChange={(e) => handleFormMeaningChange(index, e.target.value)}
+                  />
+                </div>
+              ))}
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleAddForm}
+                className="mt-2"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Shto Formë
+              </Button>
+            </div>
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={handleCancelWordDialog}>
               Anulo
             </Button>
             <Button onClick={handleSaveWord}>
-              {editingWordIndex !== null ? 'Ruaj Ndryshimet' : 'Ruaj Fjalën'}
+              {editingWordIndex !== null ? 'Përditëso' : 'Shto'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Add/Edit Ayah Dialog */}
-      <Dialog open={showAyahDialog} onOpenChange={handleCancelAyahDialog}>
-        <DialogContent className="max-w-2xl max-h-[90vh]">
+      {/* Ayah Dialog */}
+      <Dialog open={showAyahDialog} onOpenChange={setShowAyahDialog}>
+        <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>{editingAyahIndex !== null ? 'Ndrysho Ajetin' : 'Shto Ajet të Ri'}</DialogTitle>
           </DialogHeader>
-          <ScrollArea className="max-h-[60vh] pr-4">
-            <div className="space-y-4">
-              {/* Ayah Text */}
-              <div>
-                <Label htmlFor="ayahText">Teksti i Ajetit (Arabisht) *</Label>
-                <Textarea
-                  id="ayahText"
-                  placeholder="Shkruani tekstin e ajetit në arabisht"
-                  value={ayahText}
-                  onChange={(e) => setAyahText(e.target.value)}
-                  dir="rtl"
-                  className="text-right"
-                  rows={4}
-                />
-              </div>
-
-              {/* Translation */}
-              <div>
-                <Label htmlFor="ayahTranslation">Përkthimi (Shqip)</Label>
-                <Textarea
-                  id="ayahTranslation"
-                  placeholder="Shkruani përkthimin e ajetit në shqip (opsionale)"
-                  value={ayahTranslation}
-                  onChange={(e) => setAyahTranslation(e.target.value)}
-                  rows={3}
-                />
-              </div>
-
-              {/* Reference */}
-              <div>
-                <Label htmlFor="ayahReference">Referenca</Label>
-                <Input
-                  id="ayahReference"
-                  placeholder="p.sh. Surja Al-Fatiha, Ajeti 1"
-                  value={ayahReference}
-                  onChange={(e) => setAyahReference(e.target.value)}
-                />
-              </div>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="ayahText">Teksti i Ajetit</Label>
+              <Textarea
+                id="ayahText"
+                placeholder="Shkruani tekstin e ajetit në arabisht"
+                value={ayahText}
+                onChange={(e) => setAyahText(e.target.value)}
+                dir="rtl"
+                className="text-right"
+                rows={4}
+              />
             </div>
-          </ScrollArea>
+
+            <div>
+              <Label htmlFor="ayahTranslation">Përkthimi (opsional)</Label>
+              <Textarea
+                id="ayahTranslation"
+                placeholder="Shkruani përkthimin në shqip"
+                value={ayahTranslation}
+                onChange={(e) => setAyahTranslation(e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="ayahReference">Referenca (opsional)</Label>
+              <Input
+                id="ayahReference"
+                placeholder="p.sh. Surja 2, Ajeti 255"
+                value={ayahReference}
+                onChange={(e) => setAyahReference(e.target.value)}
+              />
+            </div>
+          </div>
           <DialogFooter>
             <Button variant="outline" onClick={handleCancelAyahDialog}>
               Anulo
             </Button>
             <Button onClick={handleSaveAyah}>
-              {editingAyahIndex !== null ? 'Ruaj Ndryshimet' : 'Ruaj Ajetin'}
+              {editingAyahIndex !== null ? 'Përditëso' : 'Shto'}
             </Button>
           </DialogFooter>
         </DialogContent>

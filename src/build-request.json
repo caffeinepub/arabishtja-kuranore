@@ -1,0 +1,104 @@
+{
+  "kind": "build_request",
+  "title": "Add rich-text (HTML) editing and rendering for lesson content (Përmbajtja) in Dërrasa (Whiteboard)",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-1",
+      "text": "Render the lesson content field (\"Përmbajtja\" / lesson.content) as HTML on the Dërrasa (Whiteboard) page inside the existing lesson header area, using an accordion-like UI element for expanding/collapsing the content (instead of plain text with line breaks).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "\"Përmbajta\" should appear in the already existing panel (in a accordion-like element)"
+        ]
+      },
+      "acceptanceCriteria": [
+        "When an active lesson is shown on the Whiteboard page, its content is displayed as rendered HTML (e.g., <b>, <i>, lists) rather than plain text.",
+        "The content is contained in an accordion-style section in the existing top panel/header area (above the words/ayahs sections), and can be expanded/collapsed.",
+        "Students (non-teachers) can view the rendered HTML but cannot edit it."
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "text": "Allow teachers/admins to edit lesson content (lesson.content / \"Përmbajtja\") directly on the Dërrasa (Whiteboard) page using an inline rich-text editor (toolbar for bold/italic/etc.), and save changes back to the existing lesson via the existing update flow.",
+      "target": "both",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "Yes the teachers should be able to edit lessons directly inside the rich-text editor"
+        ]
+      },
+      "acceptanceCriteria": [
+        "If the current user can create lessons (teacher/admin), the Whiteboard page shows an Edit control for the content accordion that switches the content area into a rich-text editor.",
+        "The editor supports producing/storing HTML (not Markdown) and persists the HTML string into lesson.content via the existing lesson update API.",
+        "Saving updates refreshes the active lesson query so the rendered view reflects the new HTML without a full reload.",
+        "If a teacher tries to save changes to a lesson they are not allowed to edit (backend rejects), the UI shows an error and keeps the editor state available for retry/copying."
+      ]
+    },
+    {
+      "id": "REQ-3",
+      "text": "Ensure lesson content (lesson.content / \"Përmbajtja\") is treated as HTML throughout lesson viewing experiences where content is displayed (at minimum: Dërrasa/Whiteboard active lesson view), preserving formatting such as bold/italic/lists when present.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "add html formatting features to the lesson description so that  when the lesson is shown in the Dërrasa page, it can show Bold, Italic etc. text"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Existing lessons that contain plain text continue to display correctly (no broken rendering).",
+        "Lessons that contain HTML display formatted output in the Whiteboard content panel.",
+        "No HTML sanitization/stripping is applied (all tags are allowed, as requested)."
+      ]
+    },
+    {
+      "id": "REQ-4",
+      "text": "Update the teacher lesson creation/editing forms to use the same rich-text editor for the lesson content field (\"Përmbajtja\" / lesson.content) so that teachers can author formatted content consistently across New Lesson and Edit Lesson pages.",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-1"
+        ],
+        "quotes": [
+          "I want a rich-text editor in the UI and all HTML tags should be allowed."
+        ]
+      },
+      "acceptanceCriteria": [
+        "New Lesson page uses a rich-text editor for lesson content and stores the resulting HTML string in the existing create lesson flow.",
+        "Edit Lesson page uses a rich-text editor for lesson content and stores the resulting HTML string in the existing update lesson flow.",
+        "The saved HTML is what is later rendered on the Whiteboard page."
+      ]
+    }
+  ],
+  "constraints": [
+    "Do not create a new lessons system; extend the existing lesson.content field and existing lesson CRUD flows.",
+    "Backend must remain a single-actor Motoko canister; keep all Motoko logic in backend/main.mo and only add migration code if an actual stable-state schema change is required.",
+    "Do not edit any files under frontend/src/components/ui or any other frontend immutable paths listed in SYSTEM_CONTEXT; compose existing UI components instead."
+  ],
+  "nonGoals": [
+    "Do not implement HTML sanitization, tag allowlists, or security filtering (user explicitly requested all HTML tags allowed).",
+    "Do not add a new separate lesson content storage field or new lesson model unless strictly required (it is not expected to be required).",
+    "Do not add real-time multi-user collaborative editing."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

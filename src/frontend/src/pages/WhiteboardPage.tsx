@@ -1,20 +1,22 @@
 import { useState } from 'react';
-import { useGetActiveLessonWithWordsAndAyahs, useGetNotesByAssociatedId } from '../hooks/useQueries';
+import { useGetActiveLessonWithWordsAndAyahs, useGetNotesByAssociatedId, useUpdateLesson, useCanCreateLessons } from '../hooks/useQueries';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import { BookOpen, BookMarked, FileText, StickyNote, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, BookMarked, FileText, StickyNote } from 'lucide-react';
 import NoteDialog from '../components/NoteDialog';
 import WordFormWithTooltip from '../components/WordFormWithTooltip';
+import LessonContentAccordion from '../components/LessonContentAccordion';
 import { NoteType } from '../backend';
 
 export default function WhiteboardPage() {
   const { data: activeLessonData, isLoading } = useGetActiveLessonWithWordsAndAyahs();
   const [noteDialogOpen, setNoteDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<{ id: string; type: NoteType; label: string } | null>(null);
-  const [isContentExpanded, setIsContentExpanded] = useState(false);
+  const canCreateLessons = useCanCreateLessons();
+  const updateLesson = useUpdateLesson();
 
   const handleAddNote = (itemId: string, itemType: NoteType, itemLabel: string) => {
     setSelectedItem({ id: itemId, type: itemType, label: itemLabel });
@@ -24,6 +26,18 @@ export default function WhiteboardPage() {
   const handleCloseNoteDialog = () => {
     setNoteDialogOpen(false);
     setSelectedItem(null);
+  };
+
+  const handleSaveContent = async (newContent: string) => {
+    if (!activeLessonData) return;
+    
+    const { lesson } = activeLessonData;
+    await updateLesson.mutateAsync({
+      lessonId: lesson.id,
+      title: lesson.title,
+      content: newContent,
+      visibleToStudents: lesson.visibleToStudents,
+    });
   };
 
   if (isLoading) {
@@ -65,11 +79,6 @@ export default function WhiteboardPage() {
   }
 
   const { lesson, words, ayahs } = activeLessonData;
-  const contentLength = lesson.content.length;
-  const isContentLong = contentLength > 200;
-  const previewContent = isContentLong && !isContentExpanded 
-    ? lesson.content.substring(0, 200) + '...' 
-    : lesson.content;
 
   return (
     <div className="h-full overflow-auto bg-gradient-to-br from-primary/5 via-background to-accent/5">
@@ -77,31 +86,16 @@ export default function WhiteboardPage() {
         {/* Page Title - Lesson Title */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-foreground mb-2">{lesson.title}</h2>
-          {/* Page Subtitle - Lesson Content with preserved line breaks */}
-          <div>
-            <p className="text-muted-foreground text-lg whitespace-pre-line">
-              {previewContent}
-            </p>
-            {isContentLong && (
-              <button
-                onClick={() => setIsContentExpanded(!isContentExpanded)}
-                className="mt-2 flex items-center gap-1 text-primary hover:text-primary/80 transition-colors text-sm font-medium"
-                aria-label={isContentExpanded ? 'Collapse content' : 'Expand content'}
-              >
-                {isContentExpanded ? (
-                  <>
-                    <ChevronUp className="w-4 h-4" />
-                    <span>Shfaq më pak</span>
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="w-4 h-4" />
-                    <span>Shfaq më shumë</span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
+        </div>
+
+        {/* Lesson Content Accordion */}
+        <div className="mb-8">
+          <LessonContentAccordion
+            content={lesson.content}
+            canEdit={canCreateLessons}
+            onSave={handleSaveContent}
+            isSaving={updateLesson.isPending}
+          />
         </div>
 
         {/* Fjalët e reja Section */}

@@ -1,19 +1,14 @@
 import Map "mo:core/Map";
+import Principal "mo:core/Principal";
 import List "mo:core/List";
 import Set "mo:core/Set";
-import Principal "mo:core/Principal";
 import Text "mo:core/Text";
 import Time "mo:core/Time";
+import Iter "mo:core/Iter";
+
 import Storage "blob-storage/Storage";
-import Nat "mo:core/Nat";
 
 module {
-  public type UserRole = {
-    #admin;
-    #mesuesi;
-    #nxenes;
-  };
-
   public type StableUserProfile = {
     name : Text;
     avatar : ?Storage.ExternalBlob;
@@ -29,9 +24,10 @@ module {
     createdAt : Time.Time;
     updatedAt : ?Time.Time;
     isActive : Bool;
+    visibleToStudents : Bool;
   };
 
-  public type Word = {
+  public type StableWord = {
     arabic : Text;
     albanianMeanings : List.List<Text>;
     forms : List.List<Text>;
@@ -39,7 +35,7 @@ module {
     lessonId : Text;
   };
 
-  public type Ayah = {
+  public type StableAyah = {
     text : Text;
     translation : ?Text;
     reference : ?Text;
@@ -74,52 +70,18 @@ module {
     updatedAt : ?Time.Time;
   };
 
-  public type OldActor = {
+  public type ActorV0 = {
+    nextNoteId : Nat;
     userProfiles : Map.Map<Principal.Principal, StableUserProfile>;
     lessons : Map.Map<Text, Lesson>;
-    vocabulary : Map.Map<Text, Word>;
+    vocabulary : Map.Map<Text, StableWord>;
     lessonWords : Map.Map<Text, Set.Set<Text>>;
-    lessonAyahs : Map.Map<Text, List.List<Ayah>>;
+    lessonAyahs : Map.Map<Text, List.List<StableAyah>>;
     notesByUser : Map.Map<Principal.Principal, Map.Map<Text, Note>>;
     quizzes : Map.Map<Text, Quiz>;
-    nextNoteId : Nat;
   };
 
-  public type NewLesson = {
-    id : Text;
-    title : Text;
-    content : Text;
-    author : Principal.Principal;
-    createdAt : Time.Time;
-    updatedAt : ?Time.Time;
-    isActive : Bool;
-    visibleToStudents : Bool;
-  };
-
-  public type NewActor = {
-    userProfiles : Map.Map<Principal.Principal, StableUserProfile>;
-    lessons : Map.Map<Text, NewLesson>;
-    vocabulary : Map.Map<Text, Word>;
-    lessonWords : Map.Map<Text, Set.Set<Text>>;
-    lessonAyahs : Map.Map<Text, List.List<Ayah>>;
-    notesByUser : Map.Map<Principal.Principal, Map.Map<Text, Note>>;
-    quizzes : Map.Map<Text, Quiz>;
-    nextNoteId : Nat;
-  };
-
-  public func run(old : OldActor) : NewActor {
-    let newLessons = old.lessons.map<Text, Lesson, NewLesson>(
-      func(_id, lesson) {
-        {
-          lesson with
-          visibleToStudents = false;
-        };
-      }
-    );
-
-    {
-      old with
-      lessons = newLessons;
-    };
+  public func run(old : ActorV0) : ActorV0 {
+    old;
   };
 };

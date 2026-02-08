@@ -1,12 +1,12 @@
-import { useState } from 'react';
-import { useGetLessonById } from '../hooks/useQueries';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { BookOpen, BookMarked, FileText, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
+import { BookOpen, BookMarked, FileText, ArrowLeft } from 'lucide-react';
 import WordFormWithTooltip from '../components/WordFormWithTooltip';
+import { useGetLessonById } from '../hooks/useQueries';
+import { renderLessonContent } from '../utils/lessonContentHtml';
 
 interface ViewLessonPageProps {
   lessonId: string;
@@ -15,7 +15,6 @@ interface ViewLessonPageProps {
 
 export default function ViewLessonPage({ lessonId, onBack }: ViewLessonPageProps) {
   const { data: lessonData, isLoading } = useGetLessonById(lessonId);
-  const [isContentExpanded, setIsContentExpanded] = useState(false);
 
   if (isLoading) {
     return (
@@ -54,11 +53,7 @@ export default function ViewLessonPage({ lessonId, onBack }: ViewLessonPageProps
   }
 
   const { lesson, words, ayahs } = lessonData;
-  const contentLength = lesson.content.length;
-  const isContentLong = contentLength > 200;
-  const previewContent = isContentLong && !isContentExpanded 
-    ? lesson.content.substring(0, 200) + '...' 
-    : lesson.content;
+  const renderedContent = renderLessonContent(lesson.content);
 
   return (
     <div className="h-full overflow-auto bg-gradient-to-br from-primary/5 via-background to-accent/5">
@@ -71,31 +66,23 @@ export default function ViewLessonPage({ lessonId, onBack }: ViewLessonPageProps
         {/* Page Title - Lesson Title */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-foreground mb-2">{lesson.title}</h2>
-          {/* Page Subtitle - Lesson Content with preserved line breaks */}
-          <div>
-            <p className="text-muted-foreground text-lg whitespace-pre-line">
-              {previewContent}
-            </p>
-            {isContentLong && (
-              <button
-                onClick={() => setIsContentExpanded(!isContentExpanded)}
-                className="mt-2 flex items-center gap-1 text-primary hover:text-primary/80 transition-colors text-sm font-medium"
-                aria-label={isContentExpanded ? 'Collapse content' : 'Expand content'}
-              >
-                {isContentExpanded ? (
-                  <>
-                    <ChevronUp className="w-4 h-4" />
-                    <span>Shfaq më pak</span>
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="w-4 h-4" />
-                    <span>Shfaq më shumë</span>
-                  </>
-                )}
-              </button>
-            )}
-          </div>
+        </div>
+
+        {/* Lesson Content Accordion */}
+        <div className="mb-8">
+          <Accordion type="single" collapsible className="w-full" defaultValue="content">
+            <AccordionItem value="content" className="border rounded-lg bg-card shadow-sm">
+              <AccordionTrigger className="px-6 py-4 hover:no-underline">
+                <h3 className="text-lg font-semibold text-foreground">Përmbajtja</h3>
+              </AccordionTrigger>
+              <AccordionContent className="px-6 pb-4">
+                <div 
+                  className="prose prose-sm max-w-none dark:prose-invert"
+                  dangerouslySetInnerHTML={{ __html: renderedContent }}
+                />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
         </div>
 
         {/* Fjalët e reja Section */}
@@ -178,7 +165,7 @@ function WordAccordionItem({
   return (
     <AccordionItem value={`word-${index}`} className="border-b last:border-b-0">
       <AccordionTrigger className="px-6 py-4 hover:no-underline w-full">
-        <div className="w-full flex items-start justify-end gap-3">
+        <div className="w-full flex items-start justify-between gap-3">
           <span className="text-lg font-semibold text-foreground text-right flex-1">
             {word.arabic}
           </span>
@@ -239,7 +226,7 @@ function AyahAccordionItem({
   return (
     <AccordionItem value={`ayah-${index}`} className="border-b last:border-b-0">
       <AccordionTrigger className="px-6 py-4 hover:no-underline w-full">
-        <div className="w-full flex items-start justify-end gap-3">
+        <div className="w-full flex items-start justify-between gap-3">
           <span className="text-lg font-semibold text-foreground text-right leading-loose flex-1" dir="rtl">
             {ayah.text}
           </span>
