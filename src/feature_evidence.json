@@ -2,11 +2,13 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-render-the-lesson-content-field-p-rmbajtja-lesson-content-as-html-on-the-d-rrasa-whiteboard-page-inside-the-existing-lesson-header-area-using-an-accordion-like-ui-element-for-expanding-collapsing-the-content-instead-of-plain-text-with-line-breaks",
-      "featureTitle": "Render the lesson content field (\"Përmbajtja\" / lesson.content) as HTML on the Dërrasa (Whiteboard) page inside the existing lesson header area, using an accordion-like UI element for expanding/collapsing the content (instead of plain text with line breaks).",
+      "featureId": "feature-on-the-lesson-create-and-edit-pages-replace-the-p-rmbajtja-content-textarea-field-with-an-in-page-rich-text-editor-that-supports-basic-formatting-actions-bold-italic-underline-bulleted-list-numbered-list-and-link-insertion",
+      "featureTitle": "On the lesson Create and Edit pages, replace the \"Përmbajtja\" (content) <Textarea> field with an in-page rich-text editor that supports basic formatting actions: bold, italic, underline, bulleted list, numbered list, and link insertion.",
       "files": [
-        "frontend/src/components/LessonContentAccordion.tsx",
-        "frontend/src/pages/WhiteboardPage.tsx"
+        "frontend/src/components/RichTextEditor.tsx",
+        "frontend/src/pages/EditLessonPage.tsx",
+        "frontend/src/pages/NewLessonPage.tsx",
+        "frontend/src/utils/richText.ts"
       ],
       "components": [
         "authorization@3.0.0",
@@ -23,12 +25,11 @@
       "confidence": "high"
     },
     {
-      "featureId": "feature-allow-teachers-admins-to-edit-lesson-content-lesson-content-p-rmbajtja-directly-on-the-d-rrasa-whiteboard-page-using-an-inline-rich-text-editor-toolbar-for-bold-italic-etc-and-save-changes-back-to-the-existing-lesson-via-the-existing-update-flow",
-      "featureTitle": "Allow teachers/admins to edit lesson content (lesson.content / \"Përmbajtja\") directly on the Dërrasa (Whiteboard) page using an inline rich-text editor (toolbar for bold/italic/etc.), and save changes back to the existing lesson via the existing update flow.",
+      "featureId": "feature-update-the-lesson-read-only-view-to-render-saved-rich-text-content-correctly-preserving-formatting-instead-of-treating-it-as-plain-text",
+      "featureTitle": "Update the lesson read-only view to render saved rich-text content correctly (preserving formatting) instead of treating it as plain text.",
       "files": [
-        "frontend/src/components/LessonContentAccordion.tsx",
-        "frontend/src/components/RichTextEditor.tsx",
-        "frontend/src/pages/WhiteboardPage.tsx"
+        "frontend/src/pages/ViewLessonPage.tsx",
+        "frontend/src/utils/richText.ts"
       ],
       "components": [
         "authorization@3.0.0",
@@ -41,49 +42,6 @@
       ],
       "testIds": [
         "REQ-2"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-ensure-lesson-content-lesson-content-p-rmbajtja-is-treated-as-html-throughout-lesson-viewing-experiences-where-content-is-displayed-at-minimum-d-rrasa-whiteboard-active-lesson-view-preserving-formatting-such-as-bold-italic-lists-when-present",
-      "featureTitle": "Ensure lesson content (lesson.content / \"Përmbajtja\") is treated as HTML throughout lesson viewing experiences where content is displayed (at minimum: Dërrasa/Whiteboard active lesson view), preserving formatting such as bold/italic/lists when present.",
-      "files": [
-        "frontend/src/components/LessonContentAccordion.tsx",
-        "frontend/src/pages/ViewLessonPage.tsx",
-        "frontend/src/utils/lessonContentHtml.ts"
-      ],
-      "components": [
-        "authorization@3.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-3"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-teacher-lesson-creation-editing-forms-to-use-the-same-rich-text-editor-for-the-lesson-content-field-p-rmbajtja-lesson-content-so-that-teachers-can-author-formatted-content-consistently-across-new-lesson-and-edit-lesson-pages",
-      "featureTitle": "Update the teacher lesson creation/editing forms to use the same rich-text editor for the lesson content field (\"Përmbajtja\" / lesson.content) so that teachers can author formatted content consistently across New Lesson and Edit Lesson pages.",
-      "files": [
-        "frontend/src/pages/EditLessonPage.tsx",
-        "frontend/src/pages/NewLessonPage.tsx"
-      ],
-      "components": [
-        "authorization@3.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-4"
       ],
       "confidence": "high"
     }

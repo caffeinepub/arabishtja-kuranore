@@ -4,78 +4,56 @@
 
 @layer base {
   :root {
-    /* Warm purple primary colors */
-    --background: oklch(98% 0.01 280);
-    --foreground: oklch(20% 0.02 280);
+    --background: oklch(98% 0.01 270);
+    --foreground: oklch(20% 0.02 270);
     --card: oklch(100% 0 0);
-    --card-foreground: oklch(20% 0.02 280);
+    --card-foreground: oklch(20% 0.02 270);
     --popover: oklch(100% 0 0);
-    --popover-foreground: oklch(20% 0.02 280);
-    
-    /* Warm purple primary */
-    --primary: oklch(55% 0.18 310);
-    --primary-foreground: oklch(98% 0.01 310);
-    
-    /* Complementary secondary */
-    --secondary: oklch(92% 0.03 280);
-    --secondary-foreground: oklch(25% 0.02 280);
-    
-    /* Educational-friendly accent */
-    --accent: oklch(75% 0.15 50);
-    --accent-foreground: oklch(20% 0.02 50);
-    
-    --muted: oklch(94% 0.02 280);
-    --muted-foreground: oklch(45% 0.02 280);
-    
+    --popover-foreground: oklch(20% 0.02 270);
+    --primary: oklch(55% 0.18 290);
+    --primary-foreground: oklch(98% 0.01 290);
+    --secondary: oklch(92% 0.02 270);
+    --secondary-foreground: oklch(25% 0.02 270);
+    --muted: oklch(94% 0.01 270);
+    --muted-foreground: oklch(45% 0.02 270);
+    --accent: oklch(75% 0.12 45);
+    --accent-foreground: oklch(20% 0.02 45);
     --destructive: oklch(55% 0.22 25);
     --destructive-foreground: oklch(98% 0.01 25);
-    
-    --border: oklch(88% 0.02 280);
-    --input: oklch(88% 0.02 280);
-    --ring: oklch(55% 0.18 310);
-    
+    --border: oklch(88% 0.02 270);
+    --input: oklch(88% 0.02 270);
+    --ring: oklch(55% 0.18 290);
+    --radius: 0.5rem;
     --success: oklch(60% 0.15 145);
     --success-foreground: oklch(98% 0.01 145);
-    
-    --warning: oklch(70% 0.15 70);
-    --warning-foreground: oklch(20% 0.02 70);
-    
-    --radius: 0.5rem;
+    --warning: oklch(70% 0.15 75);
+    --warning-foreground: oklch(20% 0.02 75);
   }
 
   .dark {
-    --background: oklch(15% 0.02 280);
-    --foreground: oklch(95% 0.01 280);
-    --card: oklch(18% 0.02 280);
-    --card-foreground: oklch(95% 0.01 280);
-    --popover: oklch(18% 0.02 280);
-    --popover-foreground: oklch(95% 0.01 280);
-    
-    /* Brighter primary for dark mode */
-    --primary: oklch(65% 0.20 310);
-    --primary-foreground: oklch(15% 0.02 310);
-    
-    --secondary: oklch(25% 0.03 280);
-    --secondary-foreground: oklch(95% 0.01 280);
-    
-    --accent: oklch(65% 0.15 50);
-    --accent-foreground: oklch(15% 0.02 50);
-    
-    --muted: oklch(25% 0.02 280);
-    --muted-foreground: oklch(65% 0.02 280);
-    
+    --background: oklch(18% 0.02 270);
+    --foreground: oklch(95% 0.01 270);
+    --card: oklch(20% 0.02 270);
+    --card-foreground: oklch(95% 0.01 270);
+    --popover: oklch(20% 0.02 270);
+    --popover-foreground: oklch(95% 0.01 270);
+    --primary: oklch(65% 0.18 290);
+    --primary-foreground: oklch(18% 0.02 290);
+    --secondary: oklch(28% 0.02 270);
+    --secondary-foreground: oklch(95% 0.01 270);
+    --muted: oklch(28% 0.02 270);
+    --muted-foreground: oklch(65% 0.02 270);
+    --accent: oklch(75% 0.12 45);
+    --accent-foreground: oklch(18% 0.02 45);
     --destructive: oklch(60% 0.22 25);
-    --destructive-foreground: oklch(95% 0.01 25);
-    
-    --border: oklch(30% 0.02 280);
-    --input: oklch(30% 0.02 280);
-    --ring: oklch(65% 0.20 310);
-    
+    --destructive-foreground: oklch(98% 0.01 25);
+    --border: oklch(32% 0.02 270);
+    --input: oklch(32% 0.02 270);
+    --ring: oklch(65% 0.18 290);
     --success: oklch(65% 0.15 145);
-    --success-foreground: oklch(15% 0.01 145);
-    
-    --warning: oklch(75% 0.15 70);
-    --warning-foreground: oklch(15% 0.02 70);
+    --success-foreground: oklch(18% 0.02 145);
+    --warning: oklch(75% 0.15 75);
+    --warning-foreground: oklch(18% 0.02 75);
   }
 }
 
@@ -88,158 +66,92 @@
   }
 }
 
-/* Quill editor custom styles */
-.ql-container {
+/* Rich Text Editor Styles */
+.rich-text-editor .ql-container {
+  @apply min-h-[200px] bg-background text-foreground;
   font-family: inherit;
-  font-size: inherit;
+  font-size: 0.875rem;
 }
 
-.ql-editor {
-  min-height: 200px;
-  font-size: 1rem;
-  line-height: 1.6;
+.rich-text-editor .ql-editor {
+  @apply min-h-[200px];
 }
 
-.ql-editor.ql-blank::before {
-  font-style: normal;
-  color: hsl(var(--muted-foreground));
+.rich-text-editor .ql-editor.ql-blank::before {
+  @apply text-muted-foreground italic;
 }
 
-.ql-toolbar {
-  border-top-left-radius: var(--radius);
-  border-top-right-radius: var(--radius);
-  background: hsl(var(--muted));
-  border-color: hsl(var(--border));
+.rich-text-editor .ql-toolbar {
+  @apply bg-muted/30 border-border rounded-t-md;
 }
 
-.ql-container {
-  border-bottom-left-radius: var(--radius);
-  border-bottom-right-radius: var(--radius);
-  border-color: hsl(var(--border));
-  background: hsl(var(--background));
+.rich-text-editor .ql-container {
+  @apply border-border rounded-b-md;
 }
 
-.ql-snow .ql-stroke {
-  stroke: hsl(var(--foreground));
+.rich-text-editor .ql-stroke {
+  @apply stroke-foreground;
 }
 
-.ql-snow .ql-fill {
-  fill: hsl(var(--foreground));
+.rich-text-editor .ql-fill {
+  @apply fill-foreground;
 }
 
-.ql-snow .ql-picker-label {
-  color: hsl(var(--foreground));
+.rich-text-editor .ql-picker-label {
+  @apply text-foreground;
 }
 
-.ql-toolbar button:hover,
-.ql-toolbar button:focus,
-.ql-toolbar button.ql-active {
-  color: hsl(var(--primary));
+.rich-text-editor .ql-toolbar button:hover,
+.rich-text-editor .ql-toolbar button:focus,
+.rich-text-editor .ql-toolbar button.ql-active {
+  @apply text-primary;
 }
 
-.ql-toolbar button:hover .ql-stroke,
-.ql-toolbar button:focus .ql-stroke,
-.ql-toolbar button.ql-active .ql-stroke {
-  stroke: hsl(var(--primary));
+.rich-text-editor .ql-toolbar button:hover .ql-stroke,
+.rich-text-editor .ql-toolbar button:focus .ql-stroke,
+.rich-text-editor .ql-toolbar button.ql-active .ql-stroke {
+  @apply stroke-primary;
 }
 
-.ql-toolbar button:hover .ql-fill,
-.ql-toolbar button:focus .ql-fill,
-.ql-toolbar button.ql-active .ql-fill {
-  fill: hsl(var(--primary));
+.rich-text-editor .ql-toolbar button:hover .ql-fill,
+.rich-text-editor .ql-toolbar button:focus .ql-fill,
+.rich-text-editor .ql-toolbar button.ql-active .ql-fill {
+  @apply fill-primary;
 }
 
-/* Prose styles for rendered HTML content */
+/* Prose styles for rich text rendering */
 .prose {
-  color: hsl(var(--foreground));
-  max-width: none;
-}
-
-.prose h1,
-.prose h2,
-.prose h3,
-.prose h4,
-.prose h5,
-.prose h6 {
-  color: hsl(var(--foreground));
-  font-weight: 600;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
-}
-
-.prose h1 {
-  font-size: 2em;
-}
-
-.prose h2 {
-  font-size: 1.5em;
-}
-
-.prose h3 {
-  font-size: 1.25em;
+  @apply text-foreground;
 }
 
 .prose p {
-  margin-top: 0.75em;
-  margin-bottom: 0.75em;
-}
-
-.prose a {
-  color: hsl(var(--primary));
-  text-decoration: underline;
-}
-
-.prose a:hover {
-  color: hsl(var(--primary));
-  opacity: 0.8;
+  @apply my-3;
 }
 
 .prose strong {
-  font-weight: 600;
-  color: hsl(var(--foreground));
+  @apply font-bold text-foreground;
 }
 
 .prose em {
-  font-style: italic;
+  @apply italic;
 }
 
-.prose ul,
+.prose u {
+  @apply underline;
+}
+
+.prose a {
+  @apply text-primary underline hover:text-primary/80;
+}
+
+.prose ul {
+  @apply list-disc list-inside my-3;
+}
+
 .prose ol {
-  margin-top: 0.75em;
-  margin-bottom: 0.75em;
-  padding-left: 1.5em;
+  @apply list-decimal list-inside my-3;
 }
 
 .prose li {
-  margin-top: 0.25em;
-  margin-bottom: 0.25em;
-}
-
-.prose ul > li {
-  list-style-type: disc;
-}
-
-.prose ol > li {
-  list-style-type: decimal;
-}
-
-.dark .prose {
-  color: hsl(var(--foreground));
-}
-
-.dark .prose h1,
-.dark .prose h2,
-.dark .prose h3,
-.dark .prose h4,
-.dark .prose h5,
-.dark .prose h6 {
-  color: hsl(var(--foreground));
-}
-
-.dark .prose strong {
-  color: hsl(var(--foreground));
-}
-
-.dark .prose a {
-  color: hsl(var(--primary));
+  @apply my-1;
 }

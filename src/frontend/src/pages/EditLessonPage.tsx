@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 import { useGetLessonById, useUpdateLesson } from '../hooks/useQueries';
 import RichTextEditor from '../components/RichTextEditor';
+import { isRichTextEmpty } from '../utils/richText';
 
 interface EditLessonPageProps {
   lessonId: string;
@@ -15,12 +16,12 @@ interface EditLessonPageProps {
 }
 
 export default function EditLessonPage({ lessonId, onBack }: EditLessonPageProps) {
-  const { data: lessonData, isLoading } = useGetLessonById(lessonId);
-  const updateLesson = useUpdateLesson();
-
   const [lessonTitle, setLessonTitle] = useState('');
   const [lessonContent, setLessonContent] = useState('');
   const [visibleToStudents, setVisibleToStudents] = useState(false);
+
+  const { data: lessonData, isLoading } = useGetLessonById(lessonId);
+  const updateLesson = useUpdateLesson();
 
   useEffect(() => {
     if (lessonData) {
@@ -36,7 +37,7 @@ export default function EditLessonPage({ lessonId, onBack }: EditLessonPageProps
       return;
     }
 
-    if (!lessonContent.trim()) {
+    if (isRichTextEmpty(lessonContent)) {
       toast.error('Ju lutem shkruani përmbajtjen e mësimit');
       return;
     }
@@ -45,7 +46,7 @@ export default function EditLessonPage({ lessonId, onBack }: EditLessonPageProps
       await updateLesson.mutateAsync({
         lessonId,
         title: lessonTitle.trim(),
-        content: lessonContent.trim(),
+        content: lessonContent,
         visibleToStudents,
       });
 
@@ -57,36 +58,20 @@ export default function EditLessonPage({ lessonId, onBack }: EditLessonPageProps
     }
   };
 
+  const isContentEmpty = isRichTextEmpty(lessonContent);
+
   if (isLoading) {
     return (
-      <div className="h-full flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="text-center">
-          <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
-          <p className="text-muted-foreground">Duke ngarkuar mësimin...</p>
-        </div>
+      <div className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground">Duke ngarkuar...</p>
       </div>
     );
   }
 
   if (!lessonData) {
     return (
-      <div className="h-full overflow-auto bg-gradient-to-br from-primary/5 via-background to-accent/5">
-        <div className="container mx-auto px-4 py-6 max-w-4xl">
-          <Button variant="ghost" onClick={onBack} className="mb-4">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Kthehu
-          </Button>
-          <Card className="shadow-lg">
-            <CardContent className="flex flex-col items-center justify-center py-16">
-              <h3 className="text-xl font-semibold text-foreground mb-2">
-                Mësimi nuk u gjet
-              </h3>
-              <p className="text-muted-foreground text-center max-w-md">
-                Mësimi që po kërkoni nuk ekziston ose nuk është i disponueshëm.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
+      <div className="h-full flex items-center justify-center">
+        <p className="text-muted-foreground">Mësimi nuk u gjet</p>
       </div>
     );
   }
@@ -105,7 +90,7 @@ export default function EditLessonPage({ lessonId, onBack }: EditLessonPageProps
             <ArrowLeft className="w-5 h-5" />
           </Button>
           <div className="flex-1">
-            <h2 className="text-3xl font-bold text-foreground">Ndrysho mësimin</h2>
+            <h2 className="text-3xl font-bold text-foreground">Ndrysho Mësimin</h2>
             <p className="text-muted-foreground">
               Përditësoni detajet e mësimit
             </p>
@@ -132,8 +117,7 @@ export default function EditLessonPage({ lessonId, onBack }: EditLessonPageProps
               <RichTextEditor
                 value={lessonContent}
                 onChange={setLessonContent}
-                placeholder="Shkruani përmbajtjen e mësimit..."
-                className="mt-2"
+                placeholder="Shkruani përmbajtjen e mësimit"
               />
             </div>
             <div className="flex items-center justify-between pt-2">
@@ -160,22 +144,15 @@ export default function EditLessonPage({ lessonId, onBack }: EditLessonPageProps
         </Card>
 
         {/* Save Button */}
-        <div className="flex justify-end gap-3">
+        <div className="mt-6 flex justify-end gap-3">
           <Button variant="outline" onClick={onBack}>
             Anulo
           </Button>
           <Button 
             onClick={handleSaveLesson}
-            disabled={updateLesson.isPending || !lessonTitle.trim() || !lessonContent.trim()}
+            disabled={updateLesson.isPending || !lessonTitle.trim() || isContentEmpty}
           >
-            {updateLesson.isPending ? (
-              <>
-                <div className="w-4 h-4 mr-2 animate-spin rounded-full border-2 border-background border-t-transparent" />
-                Duke ruajtur...
-              </>
-            ) : (
-              'Ruaj Ndryshimet'
-            )}
+            {updateLesson.isPending ? 'Duke ruajtur...' : 'Ruaj Ndryshimet'}
           </Button>
         </div>
       </div>

@@ -1,13 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Add rich-text (HTML) editing and accordion-style HTML rendering for lesson content (“Përmbajtja” / `lesson.content`) on the Dërrasa (Whiteboard) page, and use the same editor in teacher lesson create/edit forms.
+**Goal:** Replace the lesson content textarea with a basic rich-text editor for creating/editing lessons, and render the saved rich-text formatting correctly in the lesson view.
 
 **Planned changes:**
-- Render `lesson.content` as HTML (supporting formatting like bold/italic/lists) in the existing Whiteboard lesson header/top panel, inside an accordion-style expand/collapse section.
-- Add an inline rich-text HTML editor for teachers/admins within the Whiteboard content accordion, with save via the existing lesson update flow and a refresh of the active lesson data after save.
-- Ensure students/non-teachers can view the rendered HTML content but cannot edit it.
-- Update the New Lesson and Edit Lesson teacher forms to use the same rich-text editor for `lesson.content`, storing the resulting HTML string via existing create/update flows.
-- Handle plain-text existing lessons so they continue to display correctly, while allowing lessons containing HTML to render formatted output as-is (no sanitization/stripping).
+- Update `frontend/src/pages/NewLessonPage.tsx` to replace the “Përmbajtja” `<Textarea>` with an in-page rich-text editor supporting bold, italic, underline, bulleted list, numbered list, and link insertion, while continuing to bind to the existing `lessonContent` state string.
+- Update `frontend/src/pages/EditLessonPage.tsx` similarly, ensuring saving logic and mutation call sites remain unchanged and existing “empty content” validation still blocks saving.
+- Update `frontend/src/pages/ViewLessonPage.tsx` to render `lesson.content` as rich text (preserving formatting, lists, and links) and keep the existing expand/collapse behavior working with the rendered content.
 
-**User-visible outcome:** On the Whiteboard page, lesson “Përmbajtja” appears in an expandable accordion and displays formatted HTML; teachers can edit it inline with a rich-text toolbar and save changes, and teachers can also author the same formatted content from the New Lesson and Edit Lesson pages.
+**User-visible outcome:** Users can format lesson content with basic rich-text tools when creating or editing lessons, and the lesson view displays that formatting (including lists and links) while retaining the current preview/expand behavior.

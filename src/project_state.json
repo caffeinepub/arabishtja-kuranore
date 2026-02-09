@@ -1,45 +1,24 @@
 {
   "schemaVersion": "1.0.0",
   "projectStateVersion": 3,
-  "summary": "Add rich-text (HTML) editing and rendering for lesson description (Përmbajtja) within the existing lessons system, displayed on the Dërrasa page.",
-  "architectural_notes": [
-    "Use an in-UI rich-text editor for teachers to edit lesson Përmbajtja inline.",
-    "Persist lesson Përmbajtja as HTML within the existing lesson system/model (do not create a new lessons model unless required).",
-    "Render lesson Përmbajtja HTML inside the existing accordion-like panel on the Dërrasa page.",
-    "All HTML tags are allowed for lesson Përmbajtja (note: increases XSS/security risk)."
-  ],
+  "summary": "New project",
+  "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
   "existing_features": [
     {
-      "id": "feature-render-the-lesson-content-field-p-rmbajtja-lesson-content-as-html-on-the-d-rrasa-whiteboard-page-inside-the-existing-lesson-header-area-using-an-accordion-like-ui-element-for-expanding-collapsing-the-content-instead-of-plain-text-with-line-breaks",
-      "title": "Render the lesson content field (\"Përmbajtja\" / lesson.content) as HTML on the Dërrasa (Whiteboard) page inside the existing lesson header area, using an accordion-like UI element for expanding/collapsing the content (instead of plain text with line breaks).",
+      "id": "feature-on-the-lesson-create-and-edit-pages-replace-the-p-rmbajtja-content-textarea-field-with-an-in-page-rich-text-editor-that-supports-basic-formatting-actions-bold-italic-underline-bulleted-list-numbered-list-and-link-insertion",
+      "title": "On the lesson Create and Edit pages, replace the \"Përmbajtja\" (content) <Textarea> field with an in-page rich-text editor that supports basic formatting actions: bold, italic, underline, bulleted list, numbered list, and link insertion.",
       "reqIds": [
         "REQ-1"
       ],
       "version": 1
     },
     {
-      "id": "feature-allow-teachers-admins-to-edit-lesson-content-lesson-content-p-rmbajtja-directly-on-the-d-rrasa-whiteboard-page-using-an-inline-rich-text-editor-toolbar-for-bold-italic-etc-and-save-changes-back-to-the-existing-lesson-via-the-existing-update-flow",
-      "title": "Allow teachers/admins to edit lesson content (lesson.content / \"Përmbajtja\") directly on the Dërrasa (Whiteboard) page using an inline rich-text editor (toolbar for bold/italic/etc.), and save changes back to the existing lesson via the existing update flow.",
+      "id": "feature-update-the-lesson-read-only-view-to-render-saved-rich-text-content-correctly-preserving-formatting-instead-of-treating-it-as-plain-text",
+      "title": "Update the lesson read-only view to render saved rich-text content correctly (preserving formatting) instead of treating it as plain text.",
       "reqIds": [
         "REQ-2"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-ensure-lesson-content-lesson-content-p-rmbajtja-is-treated-as-html-throughout-lesson-viewing-experiences-where-content-is-displayed-at-minimum-d-rrasa-whiteboard-active-lesson-view-preserving-formatting-such-as-bold-italic-lists-when-present",
-      "title": "Ensure lesson content (lesson.content / \"Përmbajtja\") is treated as HTML throughout lesson viewing experiences where content is displayed (at minimum: Dërrasa/Whiteboard active lesson view), preserving formatting such as bold/italic/lists when present.",
-      "reqIds": [
-        "REQ-3"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-teacher-lesson-creation-editing-forms-to-use-the-same-rich-text-editor-for-the-lesson-content-field-p-rmbajtja-lesson-content-so-that-teachers-can-author-formatted-content-consistently-across-new-lesson-and-edit-lesson-pages",
-      "title": "Update the teacher lesson creation/editing forms to use the same rich-text editor for the lesson content field (\"Përmbajtja\" / lesson.content) so that teachers can author formatted content consistently across New Lesson and Edit Lesson pages.",
-      "reqIds": [
-        "REQ-4"
       ],
       "version": 1
     }
@@ -47,12 +26,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Integrate rich-text editor for lesson Përmbajtja, store HTML in existing lessons system, and render formatted content in the Dërrasa accordion panel (teachers can edit inline)",
+      "summary": "Replace the \"Përmbajtja\" text field on the Edit/Create lesson page with a rich-text editor supporting basic formatting",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Add rich-text (HTML) editing and rendering for lesson content (Përmbajtja) in Dërrasa (Whiteboard)",
+  "projectName": "Replace lesson content textarea with a rich-text editor (basic formatting)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

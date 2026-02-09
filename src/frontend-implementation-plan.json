@@ -1,100 +1,58 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Rich-text (HTML) lesson content editing + rendering in Whiteboard and lesson forms",
+  "title": "Rich-text editor for lesson content (create/edit) and rich rendering in view",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Render active lesson “Përmbajtja” on Whiteboard as HTML inside an accordion section in the existing header area.",
+      "summary": "Replace the lesson content Textarea on Create/Edit lesson pages with an in-page rich-text editor that supports basic formatting while keeping lessonContent as a single string for existing save flows.",
       "acceptanceCriteria": [
-        "When an active lesson is shown on the Whiteboard page, its content is displayed as rendered HTML (e.g., <b>, <i>, lists) rather than plain text.",
-        "The content is contained in an accordion-style section in the existing top panel/header area (above the words/ayahs sections), and can be expanded/collapsed.",
-        "Students (non-teachers) can view the rendered HTML but cannot edit it."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/LessonContentAccordion.tsx",
-          "operation": "create",
-          "description": "Create a reusable lesson content header component that uses the shadcn/ui Accordion to expand/collapse “Përmbajtja” and renders the lesson.content string as HTML (read-only mode by default). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/WhiteboardPage.tsx",
-          "operation": "modify",
-          "description": "Replace the current substring/whitespace-pre-line content preview with the new LessonContentAccordion rendered in the existing header area above the words/ayahs sections, so content displays as HTML and can be expanded/collapsed; ensure non-teachers only see the rendered view. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Enable teacher/admin inline rich-text editing of Whiteboard lesson content with save via existing lesson update flow and robust error handling.",
-      "acceptanceCriteria": [
-        "If the current user can create lessons (teacher/admin), the Whiteboard page shows an Edit control for the content accordion that switches the content area into a rich-text editor.",
-        "The editor supports producing/storing HTML (not Markdown) and persists the HTML string into lesson.content via the existing lesson update API.",
-        "Saving updates refreshes the active lesson query so the rendered view reflects the new HTML without a full reload.",
-        "If a teacher tries to save changes to a lesson they are not allowed to edit (backend rejects), the UI shows an error and keeps the editor state available for retry/copying."
+        "In frontend/src/pages/NewLessonPage.tsx, the lesson content input is no longer a Textarea and is replaced by a rich-text editor UI.",
+        "In frontend/src/pages/EditLessonPage.tsx, the lesson content input is no longer a Textarea and is replaced by a rich-text editor UI.",
+        "The editor provides UI controls for: bold, italic, underline, bulleted list, numbered list, and link insertion.",
+        "Typing and formatting in the editor updates the existing React state used for lesson content (lessonContent) so saving a lesson still works without changing the mutation call sites.",
+        "The existing validations that prevent saving when content is empty still function (empty editor content blocks save)."
       ],
       "file_operations": [
         {
           "path": "frontend/src/components/RichTextEditor.tsx",
           "operation": "create",
-          "description": "Create an inline rich-text editor component (contentEditable + minimal toolbar for bold/italic/underline and lists) that outputs an HTML string and supports controlled value/onChange for form and inline editing use. Verify the component's usage instructions before implementing."
+          "description": "Create a reusable in-page RichTextEditor component (contenteditable-based) that exposes value (HTML string) + onChange and provides toolbar controls for bold/italic/underline, bulleted list, numbered list, and link insertion. Ensure changes propagate into the parent lessonContent state as a single string. Verify the component's usage instructions before implementing."
         },
         {
-          "path": "frontend/src/components/LessonContentAccordion.tsx",
-          "operation": "modify",
-          "description": "Extend LessonContentAccordion to support an editable mode (teacher/admin only) with an Edit toggle, Save/Cancel controls, and integration with RichTextEditor while keeping view mode as rendered HTML. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/WhiteboardPage.tsx",
-          "operation": "modify",
-          "description": "Wire teacher/admin permissions (useCanCreateLessons) to show Edit controls; on Save, call the existing update lesson mutation (useUpdateLesson) with the updated HTML content and keep editor state on failure while showing an error (e.g., toast). Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-3",
-      "summary": "Treat lesson.content as HTML wherever displayed (at minimum Whiteboard), preserving formatting while keeping plain-text lessons readable and applying no sanitization.",
-      "acceptanceCriteria": [
-        "Existing lessons that contain plain text continue to display correctly (no broken rendering).",
-        "Lessons that contain HTML display formatted output in the Whiteboard content panel.",
-        "No HTML sanitization/stripping is applied (all tags are allowed, as requested)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/utils/lessonContentHtml.ts",
+          "path": "frontend/src/utils/richText.ts",
           "operation": "create",
-          "description": "Add a small utility to convert lesson.content into safe-to-render HTML without sanitization: detect likely-HTML vs plain text; for plain text, escape HTML characters and convert newlines to <br/> so legacy content renders correctly."
+          "description": "Add rich-text helper utilities for: determining whether editor content is effectively empty (strip tags/whitespace), extracting plain text length (for validations/UX), and sanitizing/normalizing stored HTML produced by the editor before save/render."
         },
-        {
-          "path": "frontend/src/components/LessonContentAccordion.tsx",
-          "operation": "modify",
-          "description": "Use the lessonContentHtml utility to render content consistently: render raw HTML when content appears to already be HTML; otherwise render escaped text with newline-to-<br/> conversion (no sanitization). Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/pages/ViewLessonPage.tsx",
-          "operation": "modify",
-          "description": "Update the read-only lesson view to render “Përmbajtja” as HTML (using LessonContentAccordion or the same HTML rendering utility) instead of whitespace-pre-line text + substring preview, ensuring formatting is preserved when present. Verify the component's usage instructions before implementing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-4",
-      "summary": "Update New Lesson and Edit Lesson forms to author lesson.content using the same rich-text (HTML) editor for consistent formatting.",
-      "acceptanceCriteria": [
-        "New Lesson page uses a rich-text editor for lesson content and stores the resulting HTML string in the existing create lesson flow.",
-        "Edit Lesson page uses a rich-text editor for lesson content and stores the resulting HTML string in the existing update lesson flow.",
-        "The saved HTML is what is later rendered on the Whiteboard page."
-      ],
-      "file_operations": [
         {
           "path": "frontend/src/pages/NewLessonPage.tsx",
           "operation": "modify",
-          "description": "Replace the lesson content Textarea with the RichTextEditor component and ensure the HTML string is stored in local state and passed through the existing create lesson flow unchanged. Verify the component's usage instructions before implementing."
+          "description": "Replace the Përmbajtja Textarea with the new RichTextEditor and keep wiring to existing lessonContent state (string). Update empty-content validation and save-button disabling logic to use rich-text emptiness checks, while keeping the existing mutation call sites intact."
         },
         {
           "path": "frontend/src/pages/EditLessonPage.tsx",
           "operation": "modify",
-          "description": "Replace the lesson content Textarea with the RichTextEditor component and ensure the HTML string is stored in local state and passed through the existing update lesson flow unchanged. Verify the component's usage instructions before implementing."
+          "description": "Replace the Përmbajtja Textarea with the new RichTextEditor and keep wiring to existing lessonContent state (string). Update empty-content validation and save-button disabling logic to use rich-text emptiness checks, while keeping the existing update mutation call site intact."
+        }
+      ]
+    },
+    {
+      "id": "REQ-2",
+      "summary": "Render saved lesson rich-text content in the read-only view with formatting preserved while keeping expand/collapse behavior for long content.",
+      "acceptanceCriteria": [
+        "In frontend/src/pages/ViewLessonPage.tsx, lesson.content is rendered as rich text so formatting created in the editor is visible (e.g., bold text appears bold; lists render as lists; links render as anchors).",
+        "The existing expand/collapse behavior for long content continues to work with the rendered rich text (preview vs expanded view)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/pages/ViewLessonPage.tsx",
+          "operation": "modify",
+          "description": "Render lesson.content as sanitized rich HTML (not plain text) so formatting is preserved (bold/italic/underline/lists/links). Replace substring-based preview with an expand/collapse implementation that still shows rich content (e.g., collapsed max-height/overflow hidden vs expanded) and compute 'long content' using plain-text length derived from the rich HTML."
+        },
+        {
+          "path": "frontend/src/utils/richText.ts",
+          "operation": "modify",
+          "description": "Extend utilities as needed to support ViewLessonPage rich rendering and expand/collapse logic (e.g., sanitize function for safe rendering and a plain-text length helper used to determine whether content is 'long')."
         }
       ]
     }

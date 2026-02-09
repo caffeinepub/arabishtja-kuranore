@@ -11,14 +11,12 @@ import Int "mo:core/Int";
 import MixinStorage "blob-storage/Mixin";
 import AccessControl "authorization/access-control";
 import Storage "blob-storage/Storage";
-import Migration "migration";
 
 import List "mo:core/List";
 import Set "mo:core/Set";
 
 // This canister uses stable migration.
 
-(with migration = Migration.run)
 actor {
   include MixinStorage();
 

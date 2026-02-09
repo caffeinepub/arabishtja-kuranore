@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -6,42 +6,32 @@ interface RichTextEditorProps {
   value: string;
   onChange: (value: string) => void;
   placeholder?: string;
-  className?: string;
 }
 
-export default function RichTextEditor({ value, onChange, placeholder, className }: RichTextEditorProps) {
+export default function RichTextEditor({ value, onChange, placeholder }: RichTextEditorProps) {
   const quillRef = useRef<ReactQuill>(null);
 
-  useEffect(() => {
-    // Focus the editor when mounted
-    if (quillRef.current) {
-      const editor = quillRef.current.getEditor();
-      editor.focus();
-    }
-  }, []);
-
+  // Toolbar configuration with basic formatting options
   const modules = {
     toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }],
-      [{ 'align': [] }],
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
       ['link'],
-      ['clean']
+      ['clean'],
     ],
   };
 
   const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike',
-    'list', 'bullet', 'indent',
-    'align',
-    'link'
+    'bold',
+    'italic',
+    'underline',
+    'list',
+    'bullet',
+    'link',
   ];
 
   return (
-    <div className={className}>
+    <div className="rich-text-editor">
       <ReactQuill
         ref={quillRef}
         theme="snow"
@@ -49,7 +39,7 @@ export default function RichTextEditor({ value, onChange, placeholder, className
         onChange={onChange}
         modules={modules}
         formats={formats}
-        placeholder={placeholder}
+        placeholder={placeholder || 'Shkruani përmbajtjen...'}
         className="bg-background"
       />
     </div>

@@ -1,71 +1,52 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-08T22:42:25.553Z",
-  "summary": "The diff adds a Quill-based rich-text editor and an accordion component to render/edit lesson.content as HTML, and wires it into Whiteboard plus lesson view/edit/create pages. However, it also introduces several unrelated features (PWA, lesson visibility toggles, reset data, navigation changes) and adds a backend stable-migration module despite no clear stable schema change requirement. One REQ-2 acceptance criterion (refreshing the active lesson query after save) is not verifiable from the provided diff summary.",
+  "generatedAt": "2026-02-09T14:24:21.628Z",
+  "summary": "Rich-text editor (ReactQuill) was added and integrated into EditLessonPage and ViewLessonPage, along with rich-text utilities and styling. However, the diff shows a likely incomplete replacement on NewLessonPage (Textarea import still present), and an immutable file (useInternetIdentity.ts) was modified, which violates stated constraints.",
   "missing_requirements": [
     {
-      "id": "REQ-2",
-      "requirement": "Saving updates refreshes the active lesson query so the rendered view reflects the new HTML without a full reload.",
-      "reason": "Whiteboard save calls useUpdateLesson.mutateAsync but the diff excerpt does not show any explicit refetch/invalidation or cache update to refresh the active lesson query after saving; useQueries.ts changes are only described in a truncated summary, so this criterion cannot be confirmed from the provided evidence.",
+      "id": "REQ-1",
+      "requirement": "In frontend/src/pages/NewLessonPage.tsx, the lesson content input is no longer a Textarea and is replaced by a rich-text editor UI.",
+      "reason": "The diff for NewLessonPage.tsx still imports Textarea, and the shown snippet does not include the replacement section where the Textarea would be removed. With only the provided evidence, it's not confirmed that the Textarea was fully replaced.",
       "evidence": [
-        "frontend/src/pages/WhiteboardPage.tsx",
-        "frontend-file-summaries.txt (useQueries.ts described but not shown)"
+        "frontend/src/pages/NewLessonPage.tsx"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Backend stable migration infrastructure (new backend/migration.mo and main.mo wired with Migration.run) added even though the BuildRequest only allows migration code if an actual stable-state schema change is required (none is indicated for HTML-in-lesson.content).",
-      "reason": "The request is to store HTML in the existing lesson.content field without changing the model; adding migration scaffolding appears unrequested and potentially violates the constraint about adding migration only when required.",
+      "description": "Modified an immutable file (frontend/src/hooks/useInternetIdentity.ts), despite constraints forbidding edits to files listed as immutable in SYSTEM_CONTEXT (example given includes this file).",
+      "reason": "BuildRequest constraints explicitly prohibit editing immutable files; the diff shows this file was modified.",
       "evidence": [
-        "backend/migration.mo",
-        "backend/main.mo"
+        "frontend/src/hooks/useInternetIdentity.ts"
       ]
     },
     {
-      "description": "PWA/offline support additions (service worker, manifest, install dialog, index.html meta changes).",
-      "reason": "Not requested by any REQ; outside the rich-text lesson content scope.",
+      "description": "Added/updated project_state.json tracking feature requests (AR-1/AR-2/AR-3).",
+      "reason": "Not requested by the BuildRequest requirements; appears to be project bookkeeping unrelated to implementing the rich-text editor behavior.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/index.html, frontend/public/manifest.json, frontend/public/sw.js, frontend/src/components/PWAInstallDialog.tsx, frontend/src/App.tsx)"
+        "project_state.json"
       ]
     },
     {
-      "description": "Admin-only \"Reset App Data\" feature in Settings dialog.",
-      "reason": "Not requested by any REQ; unrelated to rich-text lesson content.",
+      "description": "Added HTML sanitization and preview/length helper utilities for rich text rendering.",
+      "reason": "REQ-1/REQ-2 did not ask for sanitization or preview-generation helpers explicitly; these are additional implementation details beyond the stated requirements.",
       "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/SettingsDialog.tsx)"
-      ]
-    },
-    {
-      "description": "Lesson visibility-to-students toggles and related hooks (useSetLessonVisibility, visibility controls on Lessons page).",
-      "reason": "Not requested by any REQ; introduces new lesson visibility management UI/flows beyond the stated scope.",
-      "evidence": [
-        "frontend-file-summaries.txt (frontend/src/hooks/useQueries.ts, frontend/src/pages/LessonsPage.tsx)"
-      ]
-    },
-    {
-      "description": "Navigation/layout changes making the \"Mësimet\" tab visible to all users and adding a new viewLesson page route/view.",
-      "reason": "Not requested by any REQ; outside lesson content rich-text editing/rendering requirements.",
-      "evidence": [
-        "frontend-file-summaries.txt (frontend/src/components/MainLayout.tsx)"
+        "frontend/src/utils/richText.ts",
+        "frontend/src/pages/ViewLessonPage.tsx"
       ]
     }
   ],
-  "confidence": 0.62,
+  "confidence": 0.67,
   "changed_files": [
-    "backend/main.mo",
-    "backend/migration.mo",
     "frontend-file-summaries.txt",
-    "frontend/src/components/LessonContentAccordion.tsx",
     "frontend/src/components/RichTextEditor.tsx",
     "frontend/src/hooks/useInternetIdentity.ts",
     "frontend/src/index.css",
     "frontend/src/pages/EditLessonPage.tsx",
     "frontend/src/pages/NewLessonPage.tsx",
     "frontend/src/pages/ViewLessonPage.tsx",
-    "frontend/src/pages/WhiteboardPage.tsx",
-    "frontend/src/utils/lessonContentHtml.ts",
+    "frontend/src/utils/richText.ts",
     "project_state.json"
   ]
 }
