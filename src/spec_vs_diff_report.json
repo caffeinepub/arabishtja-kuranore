@@ -1,52 +1,46 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-02-09T14:24:21.628Z",
-  "summary": "Rich-text editor (ReactQuill) was added and integrated into EditLessonPage and ViewLessonPage, along with rich-text utilities and styling. However, the diff shows a likely incomplete replacement on NewLessonPage (Textarea import still present), and an immutable file (useInternetIdentity.ts) was modified, which violates stated constraints.",
+  "generatedAt": "2026-02-09T20:09:19.627Z",
+  "summary": "Diff updates LessonsPage to render lesson content previews as sanitized/truncated HTML, but the BuildRequest requires changing only a specific DOM element at a given XPath. The diff also appears to introduce unrelated lesson visibility controls and other feature changes not requested.",
   "missing_requirements": [
     {
       "id": "REQ-1",
-      "requirement": "In frontend/src/pages/NewLessonPage.tsx, the lesson content input is no longer a Textarea and is replaced by a rich-text editor UI.",
-      "reason": "The diff for NewLessonPage.tsx still imports Textarea, and the shown snippet does not include the replacement section where the Textarea would be removed. With only the provided evidence, it's not confirmed that the Textarea was fully replaced.",
+      "requirement": "Update only the content rendered at XPath /html[1]/body[1]/div[1]/div[1]/main[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2] so that HTML in the underlying string is rendered as sanitized rich text (no literal tags), with no other page elements changed.",
+      "reason": "The diff summary shows changes in frontend/src/pages/LessonsPage.tsx to render lesson content previews as sanitized rich HTML, but there is no evidence that the specific element at the provided XPath was targeted/updated, nor evidence that no other sections/elements were changed as required. The change appears to affect lesson previews generally rather than a single specified DOM element.",
       "evidence": [
-        "frontend/src/pages/NewLessonPage.tsx"
+        "frontend/src/pages/LessonsPage.tsx",
+        "frontend-file-summaries.txt"
       ]
     }
   ],
   "hallucinated_features": [
     {
-      "description": "Modified an immutable file (frontend/src/hooks/useInternetIdentity.ts), despite constraints forbidding edits to files listed as immutable in SYSTEM_CONTEXT (example given includes this file).",
-      "reason": "BuildRequest constraints explicitly prohibit editing immutable files; the diff shows this file was modified.",
+      "description": "Lesson visibility toggle controls for teachers/admins (Eye/EyeOff icons and Switch) integrated into lesson cards.",
+      "reason": "Not requested in the BuildRequest; the request is only about rendering a specific section’s HTML as rich text.",
       "evidence": [
-        "frontend/src/hooks/useInternetIdentity.ts"
+        "frontend-file-summaries.txt"
       ]
     },
     {
-      "description": "Added/updated project_state.json tracking feature requests (AR-1/AR-2/AR-3).",
-      "reason": "Not requested by the BuildRequest requirements; appears to be project bookkeeping unrelated to implementing the rich-text editor behavior.",
+      "description": "Multiple unrelated app features described/modified (PWA install dialog, service worker, layout/navigation changes, profile/settings dialogs, etc.).",
+      "reason": "Not requested; BuildRequest explicitly limits scope to rendering rich text for one specified DOM element and avoiding broader page/layout changes.",
+      "evidence": [
+        "frontend-file-summaries.txt"
+      ]
+    },
+    {
+      "description": "Project tracking metadata updates marking new feature requests (AR-1/AR-2) in project_state.json.",
+      "reason": "Not part of the BuildRequest’s functional requirement; it is additional bookkeeping not requested.",
       "evidence": [
         "project_state.json"
       ]
-    },
-    {
-      "description": "Added HTML sanitization and preview/length helper utilities for rich text rendering.",
-      "reason": "REQ-1/REQ-2 did not ask for sanitization or preview-generation helpers explicitly; these are additional implementation details beyond the stated requirements.",
-      "evidence": [
-        "frontend/src/utils/richText.ts",
-        "frontend/src/pages/ViewLessonPage.tsx"
-      ]
     }
   ],
-  "confidence": 0.67,
+  "confidence": 0.74,
   "changed_files": [
     "frontend-file-summaries.txt",
-    "frontend/src/components/RichTextEditor.tsx",
-    "frontend/src/hooks/useInternetIdentity.ts",
-    "frontend/src/index.css",
-    "frontend/src/pages/EditLessonPage.tsx",
-    "frontend/src/pages/NewLessonPage.tsx",
-    "frontend/src/pages/ViewLessonPage.tsx",
-    "frontend/src/utils/richText.ts",
+    "frontend/src/pages/LessonsPage.tsx",
     "project_state.json"
   ]
 }

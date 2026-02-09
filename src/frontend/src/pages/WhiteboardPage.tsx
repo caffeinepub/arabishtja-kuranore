@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { BookOpen, BookMarked, FileText, StickyNote, ChevronDown, ChevronUp } from 'lucide-react';
 import NoteDialog from '../components/NoteDialog';
 import WordFormWithTooltip from '../components/WordFormWithTooltip';
+import LessonContentHtml from '../components/LessonContentHtml';
 import { NoteType } from '../backend';
 
 export default function WhiteboardPage() {
@@ -67,9 +68,6 @@ export default function WhiteboardPage() {
   const { lesson, words, ayahs } = activeLessonData;
   const contentLength = lesson.content.length;
   const isContentLong = contentLength > 200;
-  const previewContent = isContentLong && !isContentExpanded 
-    ? lesson.content.substring(0, 200) + '...' 
-    : lesson.content;
 
   return (
     <div className="h-full overflow-auto bg-gradient-to-br from-primary/5 via-background to-accent/5">
@@ -77,11 +75,13 @@ export default function WhiteboardPage() {
         {/* Page Title - Lesson Title */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-foreground mb-2">{lesson.title}</h2>
-          {/* Page Subtitle - Lesson Content with preserved line breaks */}
+          {/* Page Subtitle - Lesson Content with rich text rendering */}
           <div>
-            <p className="text-muted-foreground text-lg whitespace-pre-line">
-              {previewContent}
-            </p>
+            <LessonContentHtml
+              content={lesson.content}
+              isExpanded={isContentExpanded}
+              maxPreviewLength={200}
+            />
             {isContentLong && (
               <button
                 onClick={() => setIsContentExpanded(!isContentExpanded)}

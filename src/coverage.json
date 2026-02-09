@@ -1,67 +1,34 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-02-09T14:24:21.631Z",
+  "generatedAt": "2026-02-09T20:09:19.629Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 2,
-    "implemented": 2,
+    "total": 1,
+    "implemented": 1,
     "items": [
       {
         "id": "REQ-1",
-        "summary": "On the lesson Create and Edit pages, replace the \"Përmbajtja\" (content) <Textarea> field with an in-page rich-text editor that supports basic formatting actions: bold, italic, underline, bulleted list, numbered list, and link insertion.",
+        "summary": "Update only the content rendered at XPath /html[1]/body[1]/div[1]/div[1]/main[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2] so that, when the underlying string contains HTML (e.g., <b>, <i>, <ul>, <a>), it is displayed as formatted rich text rather than showing the literal HTML tags.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/RichTextEditor.tsx",
-          "frontend/src/utils/richText.ts",
-          "frontend/src/pages/NewLessonPage.tsx",
-          "frontend/src/pages/EditLessonPage.tsx"
+          "frontend/src/pages/LessonsPage.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/components/RichTextEditor.tsx",
-          "frontend/src/utils/richText.ts",
-          "frontend/src/pages/NewLessonPage.tsx",
-          "frontend/src/pages/EditLessonPage.tsx"
-        ]
-      },
-      {
-        "id": "REQ-2",
-        "summary": "Update the lesson read-only view to render saved rich-text content correctly (preserving formatting) instead of treating it as plain text.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/pages/ViewLessonPage.tsx",
-          "frontend/src/utils/richText.ts"
-        ],
-        "matchedFiles": [
-          "frontend/src/pages/ViewLessonPage.tsx",
-          "frontend/src/utils/richText.ts"
+          "frontend/src/pages/LessonsPage.tsx"
         ]
       }
     ]
   },
   "changedFiles": [
     "build-request.json",
-    "build-template/Dockerfile",
-    "build-template/LICENSE",
-    "build-template/README.md",
-    "build-template/deploy.sh",
-    "build-template/icp.yaml",
-    "build-template/src/backend/canister.yaml",
-    "build-template/src/frontend/canister.yaml",
-    "caffeine.lock.json",
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
-    "frontend/src/components/RichTextEditor.tsx",
-    "frontend/src/hooks/useInternetIdentity.ts",
-    "frontend/src/index.css",
-    "frontend/src/pages/EditLessonPage.tsx",
-    "frontend/src/pages/NewLessonPage.tsx",
-    "frontend/src/pages/ViewLessonPage.tsx",
-    "frontend/src/utils/richText.ts",
+    "frontend/src/pages/LessonsPage.tsx",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

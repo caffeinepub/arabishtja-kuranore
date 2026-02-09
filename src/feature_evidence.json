@@ -2,13 +2,10 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-on-the-lesson-create-and-edit-pages-replace-the-p-rmbajtja-content-textarea-field-with-an-in-page-rich-text-editor-that-supports-basic-formatting-actions-bold-italic-underline-bulleted-list-numbered-list-and-link-insertion",
-      "featureTitle": "On the lesson Create and Edit pages, replace the \"Përmbajtja\" (content) <Textarea> field with an in-page rich-text editor that supports basic formatting actions: bold, italic, underline, bulleted list, numbered list, and link insertion.",
+      "featureId": "feature-update-only-the-content-rendered-at-xpath-html-1-body-1-div-1-div-1-main-1-div-1-div-1-div-2-div-1-div-1-div-2-so-that-when-the-underlying-string-contains-html-e-g-b-i-ul-a-it-is-displayed-as-formatted-rich-text-rather-than-showing-the-literal-html-tags",
+      "featureTitle": "Update only the content rendered at XPath /html[1]/body[1]/div[1]/div[1]/main[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2] so that, when the underlying string contains HTML (e.g., <b>, <i>, <ul>, <a>), it is displayed as formatted rich text rather than showing the literal HTML tags.",
       "files": [
-        "frontend/src/components/RichTextEditor.tsx",
-        "frontend/src/pages/EditLessonPage.tsx",
-        "frontend/src/pages/NewLessonPage.tsx",
-        "frontend/src/utils/richText.ts"
+        "frontend/src/pages/LessonsPage.tsx"
       ],
       "components": [
         "authorization@3.0.0",
@@ -21,27 +18,6 @@
       ],
       "testIds": [
         "REQ-1"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-update-the-lesson-read-only-view-to-render-saved-rich-text-content-correctly-preserving-formatting-instead-of-treating-it-as-plain-text",
-      "featureTitle": "Update the lesson read-only view to render saved rich-text content correctly (preserving formatting) instead of treating it as plain text.",
-      "files": [
-        "frontend/src/pages/ViewLessonPage.tsx",
-        "frontend/src/utils/richText.ts"
-      ],
-      "components": [
-        "authorization@3.0.0",
-        "blob-storage@4.0.0",
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-2"
       ],
       "confidence": "high"
     }

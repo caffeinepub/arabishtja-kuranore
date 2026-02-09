@@ -3,22 +3,16 @@
   "projectStateVersion": 3,
   "summary": "New project",
   "architectural_notes": [],
-  "known_issues": [],
-  "isFixRequest": false,
+  "known_issues": [
+    "Section text is currently displayed with raw HTML tags instead of rendered rich text"
+  ],
+  "isFixRequest": true,
   "existing_features": [
     {
-      "id": "feature-on-the-lesson-create-and-edit-pages-replace-the-p-rmbajtja-content-textarea-field-with-an-in-page-rich-text-editor-that-supports-basic-formatting-actions-bold-italic-underline-bulleted-list-numbered-list-and-link-insertion",
-      "title": "On the lesson Create and Edit pages, replace the \"Përmbajtja\" (content) <Textarea> field with an in-page rich-text editor that supports basic formatting actions: bold, italic, underline, bulleted list, numbered list, and link insertion.",
+      "id": "feature-update-only-the-content-rendered-at-xpath-html-1-body-1-div-1-div-1-main-1-div-1-div-1-div-2-div-1-div-1-div-2-so-that-when-the-underlying-string-contains-html-e-g-b-i-ul-a-it-is-displayed-as-formatted-rich-text-rather-than-showing-the-literal-html-tags",
+      "title": "Update only the content rendered at XPath /html[1]/body[1]/div[1]/div[1]/main[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2] so that, when the underlying string contains HTML (e.g., <b>, <i>, <ul>, <a>), it is displayed as formatted rich text rather than showing the literal HTML tags.",
       "reqIds": [
         "REQ-1"
-      ],
-      "version": 1
-    },
-    {
-      "id": "feature-update-the-lesson-read-only-view-to-render-saved-rich-text-content-correctly-preserving-formatting-instead-of-treating-it-as-plain-text",
-      "title": "Update the lesson read-only view to render saved rich-text content correctly (preserving formatting) instead of treating it as plain text.",
-      "reqIds": [
-        "REQ-2"
       ],
       "version": 1
     }
@@ -26,12 +20,12 @@
   "new_feature_requests": [
     {
       "id": "AR-1",
-      "summary": "Replace the \"Përmbajtja\" text field on the Edit/Create lesson page with a rich-text editor supporting basic formatting",
+      "summary": "Render section text as formatted rich text instead of displaying raw HTML tags",
       "reqIds": [],
       "status": "pending"
     }
   ],
-  "projectName": "Replace lesson content textarea with a rich-text editor (basic formatting)",
+  "projectName": "Render selected section text as rich text (no visible HTML tags)",
   "clarification_mode": "instant",
   "clarification_rounds": 0
 }

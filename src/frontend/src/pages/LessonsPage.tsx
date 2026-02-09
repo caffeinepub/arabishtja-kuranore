@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
 import { BookOpen, Calendar, Plus, Trash2, Pencil, Eye, EyeOff } from 'lucide-react';
 import type { Lesson } from '../backend';
+import { sanitizeHtml, truncateHtml } from '../utils/safeHtml';
 
 interface LessonsPageProps {
   onNavigateToNewLesson: () => void;
@@ -39,6 +40,12 @@ export default function LessonsPage({ onNavigateToNewLesson, onNavigateToEditLes
       month: 'long',
       day: 'numeric',
     });
+  };
+
+  const getPreviewContent = (content: string) => {
+    const sanitized = sanitizeHtml(content);
+    const { truncated } = truncateHtml(sanitized, 150);
+    return truncated;
   };
 
   const handleDeleteLesson = async () => {
@@ -157,9 +164,10 @@ export default function LessonsPage({ onNavigateToNewLesson, onNavigateToEditLes
                         )}
                       </div>
                     </div>
-                    <CardDescription className="line-clamp-3 mt-2">
-                      {lesson.content}
-                    </CardDescription>
+                    <CardDescription 
+                      className="line-clamp-3 mt-2 prose prose-sm max-w-none [&>*]:my-0 [&>*]:leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: getPreviewContent(lesson.content) }}
+                    />
                   </CardHeader>
                   <CardContent>
                     <div className="flex items-center justify-between gap-2 mb-3">

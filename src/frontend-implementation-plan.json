@@ -1,58 +1,22 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Rich-text editor for lesson content (create/edit) and rich rendering in view",
+  "title": "Render lesson section preview as sanitized rich text",
   "requirements": [
     {
       "id": "REQ-1",
-      "summary": "Replace the lesson content Textarea on Create/Edit lesson pages with an in-page rich-text editor that supports basic formatting while keeping lessonContent as a single string for existing save flows.",
+      "summary": "Render the lesson preview content at the specified XPath as sanitized rich text (not literal HTML tags) without changing any other UI elements.",
       "acceptanceCriteria": [
-        "In frontend/src/pages/NewLessonPage.tsx, the lesson content input is no longer a Textarea and is replaced by a rich-text editor UI.",
-        "In frontend/src/pages/EditLessonPage.tsx, the lesson content input is no longer a Textarea and is replaced by a rich-text editor UI.",
-        "The editor provides UI controls for: bold, italic, underline, bulleted list, numbered list, and link insertion.",
-        "Typing and formatting in the editor updates the existing React state used for lesson content (lessonContent) so saving a lesson still works without changing the mutation call sites.",
-        "The existing validations that prevent saving when content is empty still function (empty editor content blocks save)."
+        "The UI element at the provided XPath renders basic HTML formatting (bold/italic/underline, lists, links) as rich text.",
+        "The UI element at the provided XPath no longer displays literal angle-bracket HTML tags to the user.",
+        "Rendered HTML is sanitized using the existing frontend sanitization approach (e.g., frontend/src/utils/safeHtml.ts) so that scripts/event handlers are not executed.",
+        "No other sections/elements on the page are changed as part of this request."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/RichTextEditor.tsx",
-          "operation": "create",
-          "description": "Create a reusable in-page RichTextEditor component (contenteditable-based) that exposes value (HTML string) + onChange and provides toolbar controls for bold/italic/underline, bulleted list, numbered list, and link insertion. Ensure changes propagate into the parent lessonContent state as a single string. Verify the component's usage instructions before implementing."
-        },
-        {
-          "path": "frontend/src/utils/richText.ts",
-          "operation": "create",
-          "description": "Add rich-text helper utilities for: determining whether editor content is effectively empty (strip tags/whitespace), extracting plain text length (for validations/UX), and sanitizing/normalizing stored HTML produced by the editor before save/render."
-        },
-        {
-          "path": "frontend/src/pages/NewLessonPage.tsx",
+          "path": "frontend/src/pages/LessonsPage.tsx",
           "operation": "modify",
-          "description": "Replace the Përmbajtja Textarea with the new RichTextEditor and keep wiring to existing lessonContent state (string). Update empty-content validation and save-button disabling logic to use rich-text emptiness checks, while keeping the existing mutation call sites intact."
-        },
-        {
-          "path": "frontend/src/pages/EditLessonPage.tsx",
-          "operation": "modify",
-          "description": "Replace the Përmbajtja Textarea with the new RichTextEditor and keep wiring to existing lessonContent state (string). Update empty-content validation and save-button disabling logic to use rich-text emptiness checks, while keeping the existing update mutation call site intact."
-        }
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "summary": "Render saved lesson rich-text content in the read-only view with formatting preserved while keeping expand/collapse behavior for long content.",
-      "acceptanceCriteria": [
-        "In frontend/src/pages/ViewLessonPage.tsx, lesson.content is rendered as rich text so formatting created in the editor is visible (e.g., bold text appears bold; lists render as lists; links render as anchors).",
-        "The existing expand/collapse behavior for long content continues to work with the rendered rich text (preview vs expanded view)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/pages/ViewLessonPage.tsx",
-          "operation": "modify",
-          "description": "Render lesson.content as sanitized rich HTML (not plain text) so formatting is preserved (bold/italic/underline/lists/links). Replace substring-based preview with an expand/collapse implementation that still shows rich content (e.g., collapsed max-height/overflow hidden vs expanded) and compute 'long content' using plain-text length derived from the rich HTML."
-        },
-        {
-          "path": "frontend/src/utils/richText.ts",
-          "operation": "modify",
-          "description": "Extend utilities as needed to support ViewLessonPage rich rendering and expand/collapse logic (e.g., sanitize function for safe rendering and a plain-text length helper used to determine whether content is 'long')."
+          "description": "Change only the lesson content preview rendering inside the CardDescription (the element corresponding to the provided XPath) to render sanitized rich HTML instead of interpolating the raw string. Use the existing sanitizeHtml utility from frontend/src/utils/safeHtml.ts and render via dangerouslySetInnerHTML so basic tags like b/i/u/ul/li/a display as formatted rich text while scripts/event handlers are removed. Keep all other surrounding layout/structure and other page elements unchanged."
         }
       ]
     }

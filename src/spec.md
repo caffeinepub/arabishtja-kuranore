@@ -1,11 +1,11 @@
 # Specification
 
 ## Summary
-**Goal:** Replace the lesson content textarea with a basic rich-text editor for creating/editing lessons, and render the saved rich-text formatting correctly in the lesson view.
+**Goal:** Render the selected section’s stored HTML content as sanitized rich text so users see formatted text instead of literal HTML tags.
 
 **Planned changes:**
-- Update `frontend/src/pages/NewLessonPage.tsx` to replace the “Përmbajtja” `<Textarea>` with an in-page rich-text editor supporting bold, italic, underline, bulleted list, numbered list, and link insertion, while continuing to bind to the existing `lessonContent` state string.
-- Update `frontend/src/pages/EditLessonPage.tsx` similarly, ensuring saving logic and mutation call sites remain unchanged and existing “empty content” validation still blocks saving.
-- Update `frontend/src/pages/ViewLessonPage.tsx` to render `lesson.content` as rich text (preserving formatting, lists, and links) and keep the existing expand/collapse behavior working with the rendered content.
+- Update only the frontend UI element at XPath `/html[1]/body[1]/div[1]/div[1]/main[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2]` to render its string content as sanitized HTML (bold/italic/underline, lists, links).
+- Ensure sanitization uses the existing frontend sanitization approach (e.g., `frontend/src/utils/safeHtml.ts`) so scripts/event handlers are not executed.
+- Leave all other page sections/elements unchanged.
 
-**User-visible outcome:** Users can format lesson content with basic rich-text tools when creating or editing lessons, and the lesson view displays that formatting (including lists and links) while retaining the current preview/expand behavior.
+**User-visible outcome:** The specified section displays HTML-formatted content (e.g., bold text, lists, links) as rich text and no longer shows visible `<b>...</b>`-style tags.

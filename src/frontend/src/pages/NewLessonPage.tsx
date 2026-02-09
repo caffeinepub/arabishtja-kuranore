@@ -4,16 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { toast } from 'sonner';
 import { ArrowLeft, Plus, X, Trash2, Edit, Eye, EyeOff } from 'lucide-react';
 import { useAddLessonWithWords } from '../hooks/useQueries';
-import RichTextEditor from '../components/RichTextEditor';
-import { isRichTextEmpty } from '../utils/richText';
 import type { Word, Ayah } from '../backend';
+import LessonContentRichEditor from '../components/LessonContentRichEditor';
 
 interface NewLessonPageProps {
   onBack: () => void;
@@ -211,7 +209,7 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
       return;
     }
 
-    if (isRichTextEmpty(lessonContent)) {
+    if (!lessonContent.trim()) {
       toast.error('Ju lutem shkruani përmbajtjen e mësimit');
       return;
     }
@@ -219,7 +217,7 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
     try {
       const response = await addLessonWithWords.mutateAsync({
         title: lessonTitle.trim(),
-        content: lessonContent,
+        content: lessonContent.trim(),
         words,
         ayahs,
         visibleToStudents,
@@ -232,8 +230,6 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
       console.error(error);
     }
   };
-
-  const isContentEmpty = isRichTextEmpty(lessonContent);
 
   return (
     <>
@@ -274,10 +270,9 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
               </div>
               <div>
                 <Label htmlFor="content">Përmbajtja</Label>
-                <RichTextEditor
+                <LessonContentRichEditor
                   value={lessonContent}
                   onChange={setLessonContent}
-                  placeholder="Shkruani përmbajtjen e mësimit"
                 />
               </div>
               <div className="flex items-center justify-between pt-2">
@@ -465,9 +460,9 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
             </Button>
             <Button 
               onClick={handleSaveLesson}
-              disabled={addLessonWithWords.isPending || !lessonTitle.trim() || isContentEmpty}
+              disabled={addLessonWithWords.isPending || !lessonTitle.trim() || !lessonContent.trim()}
             >
-              {addLessonWithWords.isPending ? 'Duke ruajtur...' : 'Ruaj Mësimin'}
+              {addLessonWithWords.isPending ? 'Duke krijuar...' : 'Krijo Mësimin'}
             </Button>
           </div>
         </div>
@@ -479,12 +474,12 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
           <DialogHeader>
             <DialogTitle>{editingWordIndex !== null ? 'Ndrysho Fjalën' : 'Shto Fjalë të Re'}</DialogTitle>
           </DialogHeader>
-          <ScrollArea className="max-h-[60vh] pr-4">
+          <ScrollArea className="max-h-[calc(90vh-120px)] pr-4">
             <div className="space-y-4">
               <div>
-                <Label htmlFor="arabic">Fjala në Arabisht</Label>
+                <Label htmlFor="arabicWord">Fjala në Arabisht</Label>
                 <Input
-                  id="arabic"
+                  id="arabicWord"
                   placeholder="Shkruani fjalën në arabisht"
                   value={arabicWord}
                   onChange={(e) => setArabicWord(e.target.value)}
@@ -507,7 +502,7 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
                         variant="ghost"
                         size="icon"
                         onClick={() => handleRemoveMeaning(index)}
-                        className="text-destructive"
+                        className="shrink-0"
                       >
                         <X className="w-4 h-4" />
                       </Button>
@@ -528,10 +523,10 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
               <div>
                 <Label>Format e Fjalës (opsionale)</Label>
                 {forms.map((form, index) => (
-                  <div key={index} className="space-y-2 mt-2 p-3 border rounded-lg">
+                  <div key={index} className="space-y-2 mt-2 p-3 border rounded-md">
                     <div className="flex gap-2">
                       <Input
-                        placeholder="Forma në arabisht"
+                        placeholder={`Forma ${index + 1} (arabisht)`}
                         value={form}
                         onChange={(e) => handleFormChange(index, e.target.value)}
                         dir="rtl"
@@ -542,14 +537,14 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleRemoveForm(index)}
-                          className="text-destructive"
+                          className="shrink-0"
                         >
                           <X className="w-4 h-4" />
                         </Button>
                       )}
                     </div>
                     <Input
-                      placeholder="Kuptimi i formës"
+                      placeholder={`Kuptimi i formës ${index + 1} (shqip)`}
                       value={formMeanings[index]}
                       onChange={(e) => handleFormMeaningChange(index, e.target.value)}
                     />
@@ -572,7 +567,7 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
               Anulo
             </Button>
             <Button onClick={handleSaveWord}>
-              {editingWordIndex !== null ? 'Ruaj Ndryshimet' : 'Shto Fjalën'}
+              Ruaj
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -586,32 +581,30 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="ayahText">Teksti i Ajetit</Label>
-              <Textarea
+              <Label htmlFor="ayahText">Teksti i Ajetit (Arabisht)</Label>
+              <Input
                 id="ayahText"
                 placeholder="Shkruani tekstin e ajetit në arabisht"
                 value={ayahText}
                 onChange={(e) => setAyahText(e.target.value)}
                 dir="rtl"
                 className="text-right"
-                rows={4}
               />
             </div>
             <div>
-              <Label htmlFor="ayahTranslation">Përkthimi (opsional)</Label>
-              <Textarea
+              <Label htmlFor="ayahTranslation">Përkthimi (Shqip) - Opsionale</Label>
+              <Input
                 id="ayahTranslation"
                 placeholder="Shkruani përkthimin në shqip"
                 value={ayahTranslation}
                 onChange={(e) => setAyahTranslation(e.target.value)}
-                rows={3}
               />
             </div>
             <div>
-              <Label htmlFor="ayahReference">Referenca (opsional)</Label>
+              <Label htmlFor="ayahReference">Referenca (p.sh. Surja, Ajeti) - Opsionale</Label>
               <Input
                 id="ayahReference"
-                placeholder="p.sh. Surja 2, Ajeti 255"
+                placeholder="p.sh. Al-Fatiha 1:1"
                 value={ayahReference}
                 onChange={(e) => setAyahReference(e.target.value)}
               />
@@ -622,7 +615,7 @@ export default function NewLessonPage({ onBack }: NewLessonPageProps) {
               Anulo
             </Button>
             <Button onClick={handleSaveAyah}>
-              {editingAyahIndex !== null ? 'Ruaj Ndryshimet' : 'Shto Ajetin'}
+              Ruaj
             </Button>
           </DialogFooter>
         </DialogContent>

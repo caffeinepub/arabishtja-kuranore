@@ -1,58 +1,49 @@
 {
   "kind": "build_request",
-  "title": "Replace lesson content textarea with a rich-text editor (basic formatting)",
+  "title": "Render selected section text as rich text (no visible HTML tags)",
   "priority": "normal",
   "requirements": [
     {
       "id": "REQ-1",
-      "text": "On the lesson Create and Edit pages, replace the \"Përmbajtja\" (content) <Textarea> field with an in-page rich-text editor that supports basic formatting actions: bold, italic, underline, bulleted list, numbered list, and link insertion.",
+      "text": "Update only the content rendered at XPath /html[1]/body[1]/div[1]/div[1]/main[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2] so that, when the underlying string contains HTML (e.g., <b>, <i>, <ul>, <a>), it is displayed as formatted rich text rather than showing the literal HTML tags.",
       "target": "frontend",
       "source": {
         "messageIds": [
           "msg-1"
         ],
         "quotes": [
-          "In Edit/Create lesson page, change \"Përmbajtja\" text field to a rich-text editor with basic text formatting features"
+          "Render this sections text as formatted rich text instead of showing the HTML tags."
         ]
       },
       "acceptanceCriteria": [
-        "In frontend/src/pages/NewLessonPage.tsx, the lesson content input is no longer a Textarea and is replaced by a rich-text editor UI.",
-        "In frontend/src/pages/EditLessonPage.tsx, the lesson content input is no longer a Textarea and is replaced by a rich-text editor UI.",
-        "The editor provides UI controls for: bold, italic, underline, bulleted list, numbered list, and link insertion.",
-        "Typing and formatting in the editor updates the existing React state used for lesson content (lessonContent) so saving a lesson still works without changing the mutation call sites.",
-        "The existing validations that prevent saving when content is empty still function (empty editor content blocks save)."
-      ]
-    },
-    {
-      "id": "REQ-2",
-      "text": "Update the lesson read-only view to render saved rich-text content correctly (preserving formatting) instead of treating it as plain text.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-1"
-        ],
-        "quotes": [
-          "change \"Përmbajtja\" text field to a rich-text editor"
-        ]
-      },
-      "acceptanceCriteria": [
-        "In frontend/src/pages/ViewLessonPage.tsx, lesson.content is rendered as rich text so formatting created in the editor is visible (e.g., bold text appears bold; lists render as lists; links render as anchors).",
-        "The existing expand/collapse behavior for long content continues to work with the rendered rich text (preview vs expanded view)."
+        "The UI element at the provided XPath renders basic HTML formatting (bold/italic/underline, lists, links) as rich text.",
+        "The UI element at the provided XPath no longer displays literal angle-bracket HTML tags to the user.",
+        "Rendered HTML is sanitized using the existing frontend sanitization approach (e.g., frontend/src/utils/safeHtml.ts) so that scripts/event handlers are not executed.",
+        "No other sections/elements on the page are changed as part of this request."
       ]
     }
   ],
   "constraints": [
-    "Do not edit any files under frontend/src/components/ui (Shadcn components are read-only in this project).",
-    "Do not edit files listed as immutable in SYSTEM_CONTEXT (e.g., frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx).",
-    "Keep the backend lesson content field as a single string (no backend schema/state migration) unless strictly required for the editor to function."
+    "Apply changes ONLY to the DOM element identified by XPath /html[1]/body[1]/div[1]/div[1]/main[1]/div[1]/div[1]/div[2]/div[1]/div[1]/div[2].",
+    "Do not edit any files under frontend/src/components/ui or any paths listed as immutable in SYSTEM_CONTEXT."
   ],
   "nonGoals": [
-    "Adding image upload/insertion in the rich-text editor.",
-    "Changing the application language/localized Albanian UI strings.",
-    "Introducing real-time collaboration or multi-user editing."
+    "Do not add new rich-text editing capabilities.",
+    "Do not change backend data structures or stored content.",
+    "Do not restyle the overall page layout beyond what is necessary to render the selected section’s rich text correctly."
   ],
   "imageRequirements": {
     "required": [],
     "edits": []
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
   }
 }
